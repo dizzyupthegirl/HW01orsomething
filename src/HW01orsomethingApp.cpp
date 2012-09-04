@@ -19,10 +19,13 @@ class HW01orsomethingApp : public AppBasic {
 
 	private:
     Surface* my_surface_;
+	int red;
+	int green;
+	int blue;
 	static const int kAppWidth=800;
 	static const int kAppHeight=600;
 	static const int kTextureSize=1024;
-
+	
 };
 
 	void HW01orsomethingApp::setup()
@@ -30,6 +33,7 @@ class HW01orsomethingApp : public AppBasic {
 		my_surface_ = new Surface(kAppWidth, kAppHeight, false);
 	
 	}
+	
 
 	void HW01orsomethingApp::mouseDown( MouseEvent event )
 	{
@@ -40,27 +44,26 @@ class HW01orsomethingApp : public AppBasic {
 	(*settings).setResizable(false);
 	}
 
-	void drawRectangle(uint8_t* pixelData, int AppWidth, int AppHeight) {
+	//This method puts a rectangle in the middle of the screen
+	void drawRectangle(uint8_t* pixelData, int AppWidth, int AppHeight, int color) {
 
 	for(int x= (AppWidth/4); x<(AppWidth/4*3); x++) {
 		for(int y=AppHeight/4; y<(AppHeight/4*3); y++) {
-			pixelData[y+x*3]=255;
+			pixelData[3*(y*AppWidth+x)]=color;
 			}
 		}
 	}
 
 
-
-
-
 	void HW01orsomethingApp::update()
 	{
 	uint8_t* pixelData = (*my_surface_).getData();
-	drawRectangle(pixelData, kAppWidth, kAppHeight);
+	drawRectangle(pixelData, kAppWidth, kAppHeight, 50);
+	drawRectangle(pixelData, 400, 300, 255);
+	drawRectangle(pixelData, 400, 2400, 255);
+			
+
 	}
-
-
-
 	
 
 
