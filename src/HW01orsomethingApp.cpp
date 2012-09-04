@@ -25,7 +25,7 @@ class HW01orsomethingApp : public AppBasic {
 	static const int kAppWidth=800;
 	static const int kAppHeight=600;
 	static const int kTextureSize=1024;
-
+	
 	
 };
 
@@ -47,8 +47,9 @@ class HW01orsomethingApp : public AppBasic {
 	(*settings).setResizable(false);
 	}
 
-	//This method puts a rectangle in the middle of the screen
-	void drawVerticalLine(uint8_t* pixelData, int x, int y, int width, int height, int color, int kAppWidth, int kAppHeight) {
+	
+	void drawVerticalLine(uint8_t* pixelData, int x, int y, int width, int height, int color, int kAppWidth) {
+	
 	for(x; x<width; x++) {
 		for(y; y<height; y++) {
 			pixelData[3*(y*kAppWidth+x)]=color;
@@ -62,8 +63,8 @@ class HW01orsomethingApp : public AppBasic {
         data[i] = 0;
     }
 }
-
-	void drawRectangle(uint8_t* pixelData, int AppWidth, int AppHeight, int color) {
+	
+	void drawRectangles(uint8_t* pixelData, int AppWidth, int AppHeight, int color) {
  
  	for(int x= (AppWidth/4); x<(AppWidth/4*3); x++) {
  		for(int y=AppHeight/4; y<(AppHeight/4*3); y++) {
@@ -72,21 +73,34 @@ class HW01orsomethingApp : public AppBasic {
  		}
  	}
 
-
+	/*void drawTriangle() {
+		int count=0;
+	 for(int x= (kAppWidth/4); x<(kAppWidth/4*3); x++) {
+ 		for(int y=kAppHeight/4; y>0; y--) {
+			pixelData[3*(y*AppWidth+x)]=color;
+		}
+	
+	}
+	}
+	*/
 	void HW01orsomethingApp::update()
 	{
 	uint8_t* pixelData = (*my_surface_).getData();
 	
-	//clearBackground(pixelData, kAppWidth, kAppHeight);
-	drawRectangle(pixelData, kAppWidth, kAppHeight, 50);
-	drawRectangle(pixelData, 400, 300, 255);
-	
-
-	drawVerticalLine(pixelData, 400,300, kAppWidth, kAppHeight, 40, kAppWidth, kAppHeight);
-	
-
+	clearBackground(pixelData, kAppWidth, kAppHeight);
+	drawRectangles(pixelData, kAppWidth, kAppHeight, 50);
+	drawRectangles(pixelData, 400, 300, 255);
+	drawRectangles(pixelData, 200, 200, 40);
+	if(count<400) {
+	drawVerticalLine(pixelData, 400+count, 0, kAppWidth, kAppHeight, 210, kAppWidth);
+	drawVerticalLine(pixelData, 400-count, 0, kAppWidth, kAppHeight, 210, kAppWidth);
+	count++;
 	}
-
+	else {
+		count=0;
+	}
+	
+	}
 	void HW01orsomethingApp::draw()
 	{
 	gl::draw(*my_surface_);
