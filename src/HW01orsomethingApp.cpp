@@ -79,10 +79,8 @@ class HW01orsomethingApp : public AppBasic {
     while(angle < 6.28){
         tempX = posX+radius*sin(angle+3.14/2);
         tempY = posY+radius*sin(angle);
-        index = getIndex(tempX, tempY);
-        
+        index = getIndex(tempX, tempY);    
         changeColor(0,0,255,index, pixelData);
-        
         angle+=.01;
     }
 }
@@ -113,6 +111,64 @@ class HW01orsomethingApp : public AppBasic {
 	}
 	}
 	*/
+	void drawLine(int x1, int y1, int const x2, int const y2, uint8_t* pixelData) {
+    int delta_x(x2 - x1);
+    // if x1 == x2, then it does not matter what we set here
+    signed char const ix((delta_x > 0) - (delta_x < 0));
+    delta_x = std::abs(delta_x) << 1;
+ 
+    int delta_y(y2 - y1);
+    // if y1 == y2, then it does not matter what we set here
+    signed char const iy((delta_y > 0) - (delta_y < 0));
+    delta_y = std::abs(delta_y) << 1;
+ 
+    changeColor(0,255,0,getIndex(x1, y1), pixelData);
+ 
+    if (delta_x >= delta_y)
+    {
+        // error may go below zero
+        int error(delta_y - (delta_x >> 1));
+ 
+        while (x1 != x2)
+        {
+            if ((error >= 0) && (error || (ix > 0)))
+            {
+                error -= delta_x;
+                y1 += iy;
+            }
+            // else do nothing
+ 
+            error += delta_y;
+            x1 += ix;
+ 
+            changeColor(0,255,0,getIndex(x1, y1), pixelData);
+        }
+    }
+    else
+    {
+        // error may go below zero
+        int error(delta_x - (delta_y >> 1));
+ 
+        while (y1 != y2)
+        {
+            if ((error >= 0) && (error || (iy > 0)))
+            {
+                error -= delta_y;
+                x1 += ix;
+            }
+            
+ 
+            error += delta_x;
+            y1 += iy;
+ 
+            changeColor(0,255,0,getIndex(x1, y1), pixelData);
+        }
+    }
+}
+
+
+
+
 	void HW01orsomethingApp::update()
 	{
 	uint8_t* pixelData = (*my_surface_).getData();
@@ -120,6 +176,7 @@ class HW01orsomethingApp : public AppBasic {
 	drawRectangles(pixelData,50);
 	drawRectangles(pixelData, 255);
 	drawRectangles(pixelData, 40);
+	drawLine(20, 20, 520, 520, pixelData);
 	drawCircle(kAppWidth/2, kAppHeight/2, 200, pixelData);
 	if(counter<400) {
 	drawVerticalLine(pixelData, 400+counter, 0, kAppWidth, kAppHeight, 255);
