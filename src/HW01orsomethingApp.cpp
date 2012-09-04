@@ -45,11 +45,10 @@ class HW01orsomethingApp : public AppBasic {
 	}
 
 	//This method puts a rectangle in the middle of the screen
-	void drawRectangle(uint8_t* pixelData, int AppWidth, int AppHeight, int color) {
-
-	for(int x= (AppWidth/4); x<(AppWidth/4*3); x++) {
-		for(int y=AppHeight/4; y<(AppHeight/4*3); y++) {
-			pixelData[3*(y*AppWidth+x)]=color;
+	void drawRectangle(uint8_t* pixelData, int X, int Y, int width, int height, int color, int kAppWidth, int kAppHeight) {
+	for(int x= X; x<width; x++) {
+		for(int y=Y; y<height; y++) {
+			pixelData[3*(y*kAppWidth+x)]=color;
 			}
 		}
 	}
@@ -58,10 +57,7 @@ class HW01orsomethingApp : public AppBasic {
 	void HW01orsomethingApp::update()
 	{
 	uint8_t* pixelData = (*my_surface_).getData();
-	drawRectangle(pixelData, kAppWidth, kAppHeight, 50);
-	drawRectangle(pixelData, 400, 300, 255);
-	drawRectangle(pixelData, 400, 2400, 255);
-			
+	drawRectangle(pixelData, kAppWidth/4, kAppHeight/4, kAppWidth/2, kAppHeight/2, 50, kAppWidth, kAppHeight);			
 
 	}
 	
