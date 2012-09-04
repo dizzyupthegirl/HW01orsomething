@@ -48,7 +48,7 @@ class HW01orsomethingApp : public AppBasic {
 	}
 
 	//This method puts a rectangle in the middle of the screen
-	void drawRectangle(uint8_t* pixelData, int x, int y, int width, int height, int color, int kAppWidth, int kAppHeight) {
+	void drawVerticalLine(uint8_t* pixelData, int x, int y, int width, int height, int color, int kAppWidth, int kAppHeight) {
 	for(x; x<width; x++) {
 		for(y; y<height; y++) {
 			pixelData[3*(y*kAppWidth+x)]=color;
@@ -62,33 +62,30 @@ class HW01orsomethingApp : public AppBasic {
         data[i] = 0;
     }
 }
-	void drawLine(uint8_t* pixelData, int X, int Y, int length, int color, int kAppWidth, int kAppHeight) {
-		drawRectangle(pixelData, X, Y, length, 3, color, kAppWidth, kAppHeight);
-	}
+
+	void drawRectangle(uint8_t* pixelData, int AppWidth, int AppHeight, int color) {
+ 
+ 	for(int x= (AppWidth/4); x<(AppWidth/4*3); x++) {
+ 		for(int y=AppHeight/4; y<(AppHeight/4*3); y++) {
+			pixelData[3*(y*AppWidth+x)]=color;
+ 			}
+ 		}
+ 	}
+
 
 	void HW01orsomethingApp::update()
 	{
 	uint8_t* pixelData = (*my_surface_).getData();
 	
 	//clearBackground(pixelData, kAppWidth, kAppHeight);
-	//drawRectangle(pixelData, xIndex, yIndex, xIndex*3, yIndex*3, 50, kAppWidth, kAppHeight);
-	drawRectangle(pixelData, 0,0, kAppWidth, kAppHeight, 255, kAppWidth, kAppHeight);
-	//count++;
-	/*if(count>5) {
-		count=0;
-		xIndex=kAppWidth/4;
-		yIndex=kAppHeight/4;
+	drawRectangle(pixelData, kAppWidth, kAppHeight, 50);
+	drawRectangle(pixelData, 400, 300, 255);
+	
+
+	drawVerticalLine(pixelData, 400,300, kAppWidth, kAppHeight, 40, kAppWidth, kAppHeight);
+	
 
 	}
-	else {
-		xIndex=xIndex/2;
-		yIndex/2;
-	}
-	
-	*/
-	}
-
-	
 
 	void HW01orsomethingApp::draw()
 	{
