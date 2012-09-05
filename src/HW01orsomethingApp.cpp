@@ -26,9 +26,13 @@ class HW01orsomethingApp : public AppBasic {
 	static const int kAppWidth=800;
 	static const int kAppHeight=600;
 	static const int kTextureSize=1024;
+	bool animate;
 	
 	
-
+	void HW01orsomethingApp::prepareSettings(Settings* settings){
+	(*settings).setWindowSize(kAppWidth,kAppHeight);
+	(*settings).setResizable(false);
+	}
 
 	void HW01orsomethingApp::setup()
 	{
@@ -41,12 +45,10 @@ class HW01orsomethingApp : public AppBasic {
 
 	void HW01orsomethingApp::mouseDown( MouseEvent event )
 	{
+		animate=!animate;
 	}
 
-	void HW01orsomethingApp::prepareSettings(Settings* settings){
-	(*settings).setWindowSize(kAppWidth,kAppHeight);
-	(*settings).setResizable(false);
-	}
+	
 
 	int getIndex(int x, int y) {
 		return 3*(y*kAppWidth+x);
@@ -85,10 +87,47 @@ class HW01orsomethingApp : public AppBasic {
     }
 }
 
-	void clearBackground(uint8_t* data){
-    for(int i = 0; i<kAppWidth*kAppHeight*3; i++){
-        data[i] = 0;
-    }
+	void blurScreen(uint8_t* pixelData) {
+		int red1, red2, red3, red4, red5, red6, red7, red8, red9;
+		int green1, green2, green3, green4, green5, green6, green7, green8, green9;
+		int blue1, blue2, blue3, blue4, blue5, blue6,blue7, blue8, blue9;
+		double redAv, greenAv, blueAv;
+		for(int pixel=0; pixel<(3*kAppWidth*kAppHeight)-1; pixel+=3) {
+			red1=pixelData[pixel];
+			green1=pixelData[pixel+1];
+			blue1=pixelData[pixel+2];
+			red2=pixelData[pixel+3];
+			green2=pixelData[pixel+4];
+			blue2=pixelData[pixel+5];
+			red3=pixelData[pixel+6];
+			green3=pixelData[pixel+7];
+			blue3=pixelData[pixel+8];
+			red4=pixelData[pixel+kAppWidth];
+			green4=pixelData[pixel+kAppWidth+1];
+			blue4=pixelData[pixel+2+kAppWidth];
+			red5=pixelData[pixel+3+kAppWidth];
+			green5=pixelData[pixel+4+kAppWidth];
+			blue5=pixelData[pixel+5+kAppWidth];
+			red6=pixelData[pixel+6+kAppWidth];
+			green6=pixelData[pixel+7+kAppWidth];
+			blue6=pixelData[pixel+8+kAppWidth];
+			red7=pixelData[pixel+2*kAppWidth];
+			green7=pixelData[pixel+1+2*kAppWidth];
+			blue7=pixelData[pixel+2+2*kAppWidth];
+			red8=pixelData[pixel+3+2*kAppWidth];
+			green8=pixelData[pixel+4+2*kAppWidth];
+			blue8=pixelData[pixel+5+2*kAppWidth];
+			red9=pixelData[pixel+6+2*kAppWidth];
+			green9=pixelData[pixel+7+2*kAppWidth];
+			blue9=pixelData[pixel+8+2*kAppWidth];
+
+			redAv=(red1+red2+red3+red4+red5+red6+red7+red8+red9)/9.0;
+			greenAv=(green1+green2+green3+green4+green5+green6+green7+green8+green9)/9.0;
+			blueAv=(blue1+blue2+blue3+blue4+blue5+blue6+blue7+blue8+blue9)/9.0;
+			pixelData[pixel+3]=(int)redAv;
+			pixelData[pixel+4]=(int)greenAv;
+			pixelData[pixel+5]=(int)blueAv;
+		}
 }
 	
 	
@@ -101,17 +140,21 @@ class HW01orsomethingApp : public AppBasic {
  		}
  	}
 
-	/*void drawTriangle() {
-		int count=0;
-	 for(int x= (kAppWidth/4); x<(kAppWidth/4*3); x++) {
- 		for(int y=kAppHeight/4; y>0; y--) {
-			pixelData[3*(y*AppWidth+x)]=color;
-		}
 	
-	}
-	}
-	*/
+	//I found most of this method online, at http://roguebasin.roguelikedevelopment.org/index.php/Bresenham's_Line_Algorithm
+	// I tweaked some of it to follow other methods I already had in my program
+
 	void drawLine(int x1, int y1, int const x2, int const y2, uint8_t* pixelData) {
+		int tempX, tempY, holder;
+		if(x1>x2) 
+			tempX=x1-x2;
+		else
+			tempX=x2-x1;
+		if(y1>y2) 
+			tempY=y1-y2;
+		else
+			tempY=y2-y1;
+
     int delta_x(x2 - x1);
     // if x1 == x2, then it does not matter what we set here
     signed char const ix((delta_x > 0) - (delta_x < 0));
@@ -148,44 +191,56 @@ class HW01orsomethingApp : public AppBasic {
     {
         // error may go below zero
         int error(delta_x - (delta_y >> 1));
- 
-        while (y1 != y2)
-        {
-            if ((error >= 0) && (error || (iy > 0)))
-            {
+        while (y1 != y2) {
+            if ((error >= 0) && (error || (iy > 0))) {
                 error -= delta_y;
                 x1 += ix;
             }
-            
- 
             error += delta_x;
             y1 += iy;
- 
             changeColor(0,255,0,getIndex(x1, y1), pixelData);
+        }
+    }
+
+	
+}
+	void gradientBackground(int redTop, int greenTop, int blueTop, int redBottom , int greenBottom, int blueBottom, uint8_t* pixelData){
+	int i, y, x;
+	double percent;
+    for(y = 0; y<kAppHeight; y++){
+        for(x= 0; x<kAppWidth; x++){
+            i = getIndex(x, y);
+            if( i>= 0 && i < (kAppWidth*kAppHeight*3)){
+                percent = ((double)y/kAppHeight);
+                pixelData[i] = ((1-percent)*redTop)+(percent*redBottom);
+                pixelData[i+1] = ((1-percent)*greenTop)+(percent*greenBottom);
+                pixelData[i+2] = ((1-percent)*blueTop)+(percent*blueBottom);
+            }
         }
     }
 }
 
 
 
-
 	void HW01orsomethingApp::update()
 	{
 	uint8_t* pixelData = (*my_surface_).getData();
-	clearBackground(pixelData);
-	drawRectangles(pixelData,50);
-	drawRectangles(pixelData, 255);
-	drawRectangles(pixelData, 40);
-	drawLine(20, 20, 520, 520, pixelData);
+	
+	gradientBackground(0, 0, 0, 190, 190, 255, pixelData);
+	drawRectangles(pixelData, 90);
+	drawLine(0, 300, 400, 600, pixelData);
+	drawLine(400, 600, 800, 300, pixelData);
 	drawCircle(kAppWidth/2, kAppHeight/2, 200, pixelData);
 	if(counter<400) {
 	drawVerticalLine(pixelData, 400+counter, 0, kAppWidth, kAppHeight, 255);
 	drawVerticalLine(pixelData, 400-counter, 0, kAppWidth, kAppHeight, 255);
+	if(animate) 
 	counter++;
 	}
 	else {
 		counter=0;
 	}
+	blurScreen(pixelData);
 	}
 	
 	
