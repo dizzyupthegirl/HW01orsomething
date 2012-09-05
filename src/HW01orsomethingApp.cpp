@@ -1,3 +1,22 @@
+/*
+ 
+ Samantha Wolf
+ CSE 274
+ Homework One...or something
+ To meet the requirements of this homework I 
+ did the following:
+ Main goals PART A: A1, A2, A3, and A4. 
+ All seen in seperate methods.
+ Main goals PART B:I attempted to complete B1, but it actually 
+ copied parts of the screen instead of blurring them. 
+ See the blurScreen method. 
+ Strech goals PART E: 
+ E5(the lines move)
+ E6(click to toggle the line animation)
+ */
+
+
+
 #include "cinder/app/AppBasic.h"
 #include "cinder/gl/gl.h"
 #include "cinder/gl/Texture.h"
@@ -20,9 +39,9 @@ class HW01orsomethingApp : public AppBasic {
 	private:
     Surface* my_surface_;
 };
+
+	//Variables that are used through out the program
 	int counter;
-	int xIndex;
-	int yIndex;
 	static const int kAppWidth=800;
 	static const int kAppHeight=600;
 	static const int kTextureSize=1024;
@@ -38,23 +57,38 @@ class HW01orsomethingApp : public AppBasic {
 	{
 		my_surface_ = new Surface(kAppWidth, kAppHeight, false);
 		counter=0;
-		xIndex=kAppWidth/4;
-		yIndex=kAppHeight/4;
 	}
 	
-
+	/*
+	*This method takes a mouse click and toggles the animation of the 
+	*vertical lines moving across the screen
+	*/
 	void HW01orsomethingApp::mouseDown( MouseEvent event )
 	{
 		animate=!animate;
 	}
 
-	
-
+	/*
+	*This method returns the index of the x y coordinates.
+	* Similar to getters we used in java
+	* 
+	*@param x the x coordinate
+	*@param y the y coordinate
+	*/
 	int getIndex(int x, int y) {
 		return 3*(y*kAppWidth+x);
 	}
+
+	/*
+	*This method draws vertical lines, it's a variation of the drawRectangle method
+	*@param pixelData the "array" of bits that appear on the screen
+	*@param x the starting x coordinate
+	*@param y the starting y coordinate
+	*@param width the width of the line
+	*@param height the height of the line
+	*@param color the color
+	*/
 	void drawVerticalLine(uint8_t* pixelData, int x, int y, int width, int height, int color) {
-	
 	for(x; x<width; x++) {
 		for(y; y<height; y++) {
 			pixelData[3*(y*kAppWidth+x)]=color;
@@ -62,31 +96,53 @@ class HW01orsomethingApp : public AppBasic {
 		}
 	}
 
+	/*
+	*This method changes the color of a pixel
+	*@param r the amount of red
+	*@param g the amount of green
+	*@param b the amount of blue
+	*@param index the index of the pixel to be changed
+	*@param pixelData the "array" of bits that appear on the screen
+	*/
 	void changeColor(int r, int g, int b, int index, uint8_t* pixelData) {
 		 if(index>=0 && index <kAppHeight*kAppWidth*3){
 			pixelData[index]=r;
 			pixelData[index+1]=g;
 			pixelData[index+2]=b;
-	
-	}
+		}
 	}
 
-
-	void drawCircle(int posX, int posY, int radius, uint8_t* pixelData){
+	/*
+	*This method draws circles on the screen. 
+	*Cite: Brandon Sonoda for helping me understand this method
+	*@param x the starting x coordinate
+	*@param y the starting y coordinate
+	*@param r the radius of the circle
+	*@param pixelData the "array" of bits that appear on the screen
+	*/
+	void drawCircle(int x, int y, int r, uint8_t* pixelData){
     int tempX, tempY;
     double angle = 0;
     
-    int index;
+    int i;
     
     while(angle < 6.28){
-        tempX = posX+radius*sin(angle+3.14/2);
-        tempY = posY+radius*sin(angle);
-        index = getIndex(tempX, tempY);    
-        changeColor(0,0,255,index, pixelData);
+        tempX = x+r*sin(angle+3.14/2);
+        tempY = y+r*sin(angle);
+        i = getIndex(tempX, tempY);    
+        changeColor(0,0,255,i, pixelData);
         angle+=.01;
     }
 }
 
+	/*
+	*Okay, so this method was supposed to blue the screen, however, it doesn't.
+	*But what it does is way cooler, and I just couldn't change it.
+	*I know that to get the blue method to work, I would've had to change 
+	*my approach to nested for loops, but I'm still happy with the way this turned out
+	*
+	*@param pixelData the "array" of bits that appear on the screen
+	*/
 	void blurScreen(uint8_t* pixelData) {
 		int red1, red2, red3, red4, red5, red6, red7, red8, red9;
 		int green1, green2, green3, green4, green5, green6, green7, green8, green9;
@@ -130,7 +186,13 @@ class HW01orsomethingApp : public AppBasic {
 		}
 }
 	
-	
+	/*
+	*This method draw a rectangle that starts at the center of the screen and goes out 
+	* leaving 1/4 of the screen no matter which way you go
+	*
+	*@param pixelData the "array" of bits that appear on the screen
+	*@param color messes with the color red in the pixel
+	*/
 	void drawRectangles(uint8_t* pixelData, int color) {
  
  	for(int x= (kAppWidth/4); x<(kAppWidth/4*3); x++) {
@@ -141,8 +203,11 @@ class HW01orsomethingApp : public AppBasic {
  	}
 
 	
-	//I found most of this method online, at http://roguebasin.roguelikedevelopment.org/index.php/Bresenham's_Line_Algorithm
-	// I tweaked some of it to follow other methods I already had in my program
+	/*I found most of this method online, at 
+	* http://roguebasin.roguelikedevelopment.org/index.php/Bresenham's_Line_Algorithm
+	* I tweaked some of it to follow other methods I already had in my program
+	* This draws the lines that appear on the bottom of the screen
+	*/
 
 	void drawLine(int x1, int y1, int const x2, int const y2, uint8_t* pixelData) {
 		int tempX, tempY, holder;
@@ -204,6 +269,18 @@ class HW01orsomethingApp : public AppBasic {
 
 	
 }
+	
+	/*
+	*This method makes the screen have a gradient to it
+	*
+	*@param redTop the amount of red in the top color
+	*@param greenTop the amount of green in the top color
+	*@param blueTop the amount of blue in the top color
+	@param redBottom the amount of red in the bottom color
+	*@param greenBottom the amount of green in the bottom color
+	*@param blueBottom the amount of blue in the bottom color
+	*@param pixelData the "array" of bits that appear on the screen
+	*/
 	void gradientBackground(int redTop, int greenTop, int blueTop, int redBottom , int greenBottom, int blueBottom, uint8_t* pixelData){
 	int i, y, x;
 	double percent;
@@ -219,8 +296,6 @@ class HW01orsomethingApp : public AppBasic {
         }
     }
 }
-
-
 
 	void HW01orsomethingApp::update()
 	{
@@ -241,8 +316,7 @@ class HW01orsomethingApp : public AppBasic {
 		counter=0;
 	}
 	blurScreen(pixelData);
-	}
-	
+	}	
 	
 	void HW01orsomethingApp::draw()
 	{
