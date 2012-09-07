@@ -38,6 +38,9 @@ class HW01orsomethingApp : public AppBasic {
 
 	private:
     Surface* my_surface_;
+
+	// NC: There are no method declarations here! Be sure to take care of 
+	// NC: that on your nect project in a .h file
 };
 
 	//Variables that are used through out the program
@@ -76,6 +79,7 @@ class HW01orsomethingApp : public AppBasic {
 	*@param y the y coordinate
 	*/
 	int getIndex(int x, int y) {
+		// NC: Clever. This makes the rest of your code more easily understood.
 		return 3*(y*kAppWidth+x);
 	}
 
@@ -89,7 +93,10 @@ class HW01orsomethingApp : public AppBasic {
 	*@param color the color
 	*/
 	void drawVerticalLine(uint8_t* pixelData, int x, int y, int width, int height, int color) {
-	for(x; x<width; x++) {
+	
+		//NC: Is this method necessary? It seems as if the drawLine method
+		//NC: would be able to take of this for you
+		for(x; x<width; x++) {
 		for(y; y<height; y++) {
 			pixelData[3*(y*kAppWidth+x)]=color;
 			}
@@ -126,6 +133,7 @@ class HW01orsomethingApp : public AppBasic {
     
     int i;
     
+	// Very good and interesting approach here.
     while(angle < 6.28){
         tempX = x+r*sin(angle+3.14/2);
         tempY = y+r*sin(angle);
@@ -144,6 +152,10 @@ class HW01orsomethingApp : public AppBasic {
 	*@param pixelData the "array" of bits that appear on the screen
 	*/
 	void blurScreen(uint8_t* pixelData) {
+		
+		// NC: While this method does produce a very cool effect,
+		// NC: it could be cleaned up in regards to the several variables it creates
+		// NC: and uses. Arrays may be able to assist in this.
 		int red1, red2, red3, red4, red5, red6, red7, red8, red9;
 		int green1, green2, green3, green4, green5, green6, green7, green8, green9;
 		int blue1, blue2, blue3, blue4, blue5, blue6,blue7, blue8, blue9;
@@ -195,6 +207,9 @@ class HW01orsomethingApp : public AppBasic {
 	*/
 	void drawRectangles(uint8_t* pixelData, int color) {
  
+		// NC: It may be beneficial to pass a few more parameters, 
+		// NC: just to make the placement of the rectangle more easily
+		// NC: controlled
  	for(int x= (kAppWidth/4); x<(kAppWidth/4*3); x++) {
  		for(int y=kAppHeight/4; y<(kAppHeight/4*3); y++) {
 			pixelData[3*(y*kAppWidth+x)]=color;
